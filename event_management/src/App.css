@@ -1,0 +1,64 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+  }
+  .home-section {
+    position: relative; /* Position relative to allow absolute positioning of the overlay */
+    text-align: center;
+    padding: 50px 20px;
+    background-image: url('./assets/home.jpg'); /* Replace with your image file name */
+    background-size: cover; /* Cover the entire section */
+    background-position: center; /* Center the image */
+    color: #fff; /* Text color */
+    height: 400px;
+  }
+  .overlay {
+    position: absolute; /* Position the overlay absolutely */
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5); /* Black overlay with 50% opacity */
+    z-index: 1; /* Ensure the overlay is above the background image */
+  }
+  .home-section h1,
+  .home-section p {
+    position: relative; /* Position text above the overlay */
+    z-index: 2; /* Ensure text is above the overlay */
+  }
+  .about-section,
+  .contact-section {
+    padding: 40px 20px;
+    background-color: #fff;
+    margin-bottom: 20px;
+  }
+  h2 {
+    color: #333;
+  }
+  .events-section {
+    padding: 10px 0px;
+    background-color: #fff;
+  }
+  .events-container {
+    display: flex; /* Use Flexbox for horizontal alignment */
+    justify-content: space-around; /* Distribute space evenly between items */
+    flex-wrap: nowrap; /* Prevent wrapping to the next line */
+  }
+  .event {
+    text-align: center; /* Center the text under the image */
+    margin: 20px; /* Add some margin around each event */
+    flex: 0 0 auto; /* Prevent flex items from growing or shrinking */
+    max-width: 200px; /* Set a max width for each event */
+  }
+  .event img {
+    width: 100%; /* Make the image responsive */
+    height: auto; /* Maintain aspect ratio */
+  }
+  .event h3 {
+    margin: 10px 0 5px; /* Add margin for spacing */
+  }
+  .event p {
+    margin: 5px 0; /* Add margin for spacing */
+  }
