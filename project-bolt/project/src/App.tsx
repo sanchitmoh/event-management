@@ -15,6 +15,8 @@ import ContactPage from './pages/ContactPage';
 import MovieDetailPage from './pages/MovieDetailPage';
 import StadiumSelection from './pages/StadiumSelection';
 import ConcertSeat from './pages/ConcertSeat';
+import ConcertPage from './pages/ConcertPage';
+import ConcertDetailPage from './pages/ConcertDetailPage';
 
 function App() {
   return (
@@ -37,7 +39,10 @@ function App() {
             <Route path="/movies/:id" element={<MovieDetailPage />} />
             <Route path="/seat" Component={SeatSelectionPage} /> 
             <Route path="/stadium" Component={StadiumSelection} /> 
-            <Route path="/concert" Component={ConcertSeat} /> 
+            <Route path="/concertseat" Component={ConcertSeat} /> 
+            <Route path="/concert" Component={ConcertPage} /> 
+            <Route path="/concert/:id" element={<ConcertDetailPage />} />
+            <Route path="/concert/:id/book" Component={PaymentPage} />
           </Routes>
         </main>
         <Footer />

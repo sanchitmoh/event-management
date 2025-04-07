@@ -100,3 +100,17 @@ export interface Seat {
   price: number; // Price of the seat
   status: 'available' | 'sold'; // Status of the seat
 }
+// types.ts
+// types.ts
+export interface Concert {
+  id: string; // Unique identifier for the concert
+  title: string; // Title of the concert
+  description: string; // Description of the concert
+  date: string; // Date of the concert (ISO format)
+  time: string; // Time of the concert
+  venue: string; // Venue where the concert is held
+  price: number; // Price of the concert ticket
+  location: string; // Location of the concert (city, state, etc.)
+  category: string; // Category of the concert (e.g., pop, rock, etc.)
+  imageUrl: string; // URL of the concert image
+}

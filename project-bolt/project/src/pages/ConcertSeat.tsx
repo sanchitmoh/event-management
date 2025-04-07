@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Link } from 'react-router-dom'; // Ensure you import Link
 import { Star as Stage, Users, User, Crown, Star, Users2 } from 'lucide-react';
 interface SeatCategory {
   id: string;
@@ -63,8 +64,7 @@ function App() {
       alert('Please select a seating category');
       return;
     }
-    // Handle payment logic here
-    alert('Proceeding to payment...');
+    // Handle any additional logic here if needed
   };
   return (
     <div className="min-h-screen bg-gray-900 text-white">
@@ -114,20 +114,19 @@ function App() {
           ))}
         </div>
         {/* Proceed to Payment Button */}
-        {/* Proceed to Payment Button */}
-<div className="flex justify-center mb-4">
-  <button
+        <div className="flex justify-center mb-4">
+        <Link
+    to="/checkout" // Link to the payment page
     onClick={handleProceedToPayment}
-    disabled={!selectedCategory} // Button will be disabled if no category is selected
-    className={`w-1/2 py-4 rounded-lg font-bold text-lg transition-all duration-300 ${
+    className={`w-1/2 py-4 rounded-lg font-bold text-lg transition-all duration-300 flex items-center justify-center ${
       selectedCategory
         ? 'bg-blue-500 hover:bg-blue-600' // Enabled state styles
         : 'bg-gray-600 cursor-not-allowed opacity-50' // Disabled state styles
     }`}
   >
     Proceed to Payment
-  </button>
-</div>
+  </Link>
+        </div>
       </div>
     </div>
   );

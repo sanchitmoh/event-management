@@ -32,12 +32,17 @@ export default function Footer() {
             <ul className="space-y-2">
               <li>
                 <Link to="/events" className="text-gray-400 hover:text-white">
-                  Events
+                  Concerts
                 </Link>
               </li>
               <li>
                 <Link to="/movies" className="text-gray-400 hover:text-white">
                   Movies
+                </Link>
+              </li>
+              <li>
+                <Link to="/movies" className="text-gray-400 hover:text-white">
+                  Sports
                 </Link>
               </li>
               <li>

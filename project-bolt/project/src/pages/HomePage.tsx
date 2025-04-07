@@ -5,7 +5,7 @@ import EventVideoCard from '../components/EventVideoCard';
 import { Event } from '../types';
 import { Calendar, Music, Trophy, Theater, Flame, Clock } from 'lucide-react';
 import ReactPlayer from 'react-player';
-
+// Mock event data
 const MOCK_EVENTS: Event[] = [
   {
     id: '1',
@@ -16,7 +16,7 @@ const MOCK_EVENTS: Event[] = [
     time: '18:00',
     venue: 'Central Park',
     price: 99.99,
-    imageUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3', // Valid URL
+    imageUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3',
     videoUrl: 'https://player.vimeo.com/video/164949806',
     availableSeats: 1000,
   },
@@ -31,7 +31,7 @@ const MOCK_EVENTS: Event[] = [
     price: 299.99,
     imageUrl: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a',
     videoUrl: 'https://player.vimeo.com/video/162947210',
-    availableSeats: 500
+    availableSeats: 500,
   },
   {
     id: '3',
@@ -44,7 +44,7 @@ const MOCK_EVENTS: Event[] = [
     price: 199.99,
     imageUrl: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf',
     videoUrl: 'https://player.vimeo.com/video/165006795',
-    availableSeats: 300
+    availableSeats: 300,
   },
   {
     id: '4',
@@ -57,7 +57,7 @@ const MOCK_EVENTS: Event[] = [
     price: 149.99,
     imageUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7',
     videoUrl: 'https://player.vimeo.com/video/163231391',
-    availableSeats: 800
+    availableSeats: 800,
   },
   {
     id: '5',
@@ -70,7 +70,7 @@ const MOCK_EVENTS: Event[] = [
     price: 399.99,
     imageUrl: 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb253',
     videoUrl: 'https://player.vimeo.com/video/162947210',
-    availableSeats: 600
+    availableSeats: 600,
   },
   {
     id: '6',
@@ -83,7 +83,7 @@ const MOCK_EVENTS: Event[] = [
     price: 179.99,
     imageUrl: 'https://images.unsplash.com/photo-1507676385008-e7fb562d11f8',
     videoUrl: 'https://player.vimeo.com/video/165006795',
-    availableSeats: 400
+    availableSeats: 400,
   },
   {
     id: '7',
@@ -96,7 +96,7 @@ const MOCK_EVENTS: Event[] = [
     price: 89.99,
     imageUrl: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629',
     videoUrl: 'https://player.vimeo.com/video/164949806',
-    availableSeats: 200
+    availableSeats: 200,
   },
   {
     id: '8',
@@ -109,63 +109,58 @@ const MOCK_EVENTS: Event[] = [
     price: 159.99,
     imageUrl: 'https://images.unsplash.com/photo-1519834785169-98be25ec3f84',
     videoUrl: 'https://player.vimeo.com/video/165006795',
-    availableSeats: 700
-  }
+    availableSeats: 700,
+  },
 ];
-
+// Categories with links
 const CATEGORIES = [
-  { id: 'all', label: 'All Events', icon: Calendar },
-  { id: 'concert', label: 'Concerts', icon: Music },
-  { id: 'sports', label: 'Sports', icon: Trophy },
-  { id: 'theater', label: 'Theater', icon: Theater }
+  { id: 'all', label: 'All Events', icon: Calendar, link: '/events' },
+  { id: 'concert', label: 'Concerts', icon: Music, link: '/concert' },
+  { id: 'sports', label: 'Sports', icon: Trophy, link: '/sports' },
+  { id: 'movies', label: 'Movies', icon: Theater, link: '/movies' }, // Added Movies category
 ];
-
 export default function HomePage() {
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   // Sort events by date
-  const sortedEvents = [...MOCK_EVENTS].sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime());
-  // Get the latest events (first 4 sorted by date)
-  const latestEvents = sortedEvents.slice(0, 4);
-  // Get the popular events (first 4 sorted by popularity)
-  const popularEvents = [...MOCK_EVENTS]
-    .sort((a, b) => (b.popularity || 0) - (a.popularity || 0)) // Use 0 as a fallback
-    .slice(0, 4);
+  const sortedEvents: Event[] = [...MOCK_EVENTS].sort((a, b) => {
+    const dateA = new Date(a.date).getTime();
+    const dateB = new Date(b.date).getTime();
+    return dateA - dateB;
+  });
+  const latestEvents: Event[] = sortedEvents.slice(0, 4);
+  const popularEvents: Event[] = [...MOCK_EVENTS].slice(0, 4); // Adjusted to just take first 4 events for popular
   // Filter events based on category and search query
-  const filteredEvents = MOCK_EVENTS.filter(event => {
-    const matchesCategory = selectedCategory === 'all' || event.category === selectedCategory;
-    const matchesSearch = event.title.toLowerCase().includes(searchQuery.toLowerCase());
+  const filteredEvents: Event[] = MOCK_EVENTS.filter(event => {
+    const matchesCategory: boolean = selectedCategory === 'all' || event.category === selectedCategory;
+    const matchesSearch: boolean = event.title.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesCategory && matchesSearch;
   });
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
       {/* Video Background Hero Section */}
       <div className="relative h-screen overflow-hidden">
         <div className="absolute inset-0">
-        <ReactPlayer
-          url="https://player.vimeo.com/video/459849442"
-          playing
-          loop
-          muted
-          width="100%"
-          height="100%"
-          //onReady={() => setIsVideoLoaded(true)}
-          //style={{ opacity: isVideoLoaded ? 1 : 0, transition: 'opacity 0.5s ease' }} // Added transition for smooth opacity change
-          config={{
-            vimeo: {
-              playerOptions: {
-                background: true,
-                autoplay: true,
-                controls: false,
-                responsive: true,
+          <ReactPlayer
+            url="https://player.vimeo.com/video/459849442"
+            playing
+            loop
+            muted
+            width="100%"
+            height="100%"
+            config={{
+              vimeo: {
+                playerOptions: {
+                  background: true,
+                  autoplay: true,
+                  controls: false,
+                  responsive: true,
+                },
               },
-            },
-          }}
-        />
+            }}
+          />
           <div className="absolute inset-0 bg-gradient-to-b from-black/70 via-black/50 to-indigo-900/90 backdrop-blur-sm"></div>
         </div>
-        
         <div className="relative h-full flex items-center">
           <div className="max-w-7xl mx-auto px-4 text-center">
             <h1 className="text-6xl font-bold text-white mb-4 animate-fade-in-up">
@@ -180,7 +175,6 @@ export default function HomePage() {
           </div>
         </div>
       </div>
-
       {/* Latest Events Section */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
@@ -200,7 +194,6 @@ export default function HomePage() {
           ))}
         </div>
       </div>
-
       {/* Popular Events Section */}
       <div className="max-w-7xl mx-auto px-4 py-16">
         <div className="flex items-center justify-between mb-8">
@@ -220,15 +213,15 @@ export default function HomePage() {
           ))}
         </div>
       </div>
-
       {/* Categories Section */}
       <div className="mb-12 animate-fade-in-up stagger-delay-3">
         <div className="flex justify-center space-x-6">
-          {CATEGORIES.map((category, index) => {
+          {CATEGORIES.map((category) => {
             const Icon = category.icon;
             return (
-              <button
+              <Link
                 key={category.id}
+                to={category.link}
                 onClick={() => setSelectedCategory(category.id)}
                 className={`px-6 py-3 rounded-full transition-all duration-300 flex items-center space-x-2 ${
                   selectedCategory === category.id
@@ -238,12 +231,11 @@ export default function HomePage() {
               >
                 <Icon className="h-5 w-5" />
                 <span>{category.label}</span>
-              </button>
+              </Link>
             );
           })}
         </div>
       </div>
-
       {/* Newsletter Section */}
       <div className="bg-gradient-to-r from-indigo-800 to-purple-800 py-16">
         <div className="max-w-7xl mx-auto px-4 text-center">
