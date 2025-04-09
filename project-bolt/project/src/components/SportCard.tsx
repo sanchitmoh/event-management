@@ -1,19 +1,21 @@
 import { Link } from 'react-router-dom';
 import { Calendar, MapPin, Clock } from 'lucide-react';
-import { Event } from '../types';
+import { SportEvent } from '../types'; // Make sure to import the SportEvent interface
 import { format } from 'date-fns';
-interface EventCardProps {
-  event: Event;
+interface SportCardProps {
+  event: SportEvent; // Use the SportEvent interface
 }
-export default function EventCard({ event }: EventCardProps) {
+export default function SportCard({ event }: SportCardProps) {
   return (
-    <Link to={`/events/${event.id}`} className="group">
-      <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform group-hover:scale-105">
-        <img
-          src={event.imageUrl}
-          alt={event.title}
-          className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" // Added hover effect
-        />
+    <Link to={`/sport/${event.id}`} className="group">
+      <div className="bg-white rounded-lg shadow-md overflow-hidden transition-transform group-hover:scale-[1.02]">
+        <div className="relative">
+          <img
+            src={event.imageUrl}
+            alt={event.title}
+            className="w-full h-48 object-cover transition-transform duration-300 group-hover:scale-105" // Apply scale on hover
+          />
+        </div>
         <div className="p-4">
           <div className="flex items-center justify-between mb-2">
             <span className="text-sm font-medium text-indigo-600 uppercase">
@@ -35,7 +37,7 @@ export default function EventCard({ event }: EventCardProps) {
             </div>
             <div className="flex items-center text-gray-600">
               <MapPin className="h-4 w-4 mr-2" />
-              <span className="text-sm">{event.venue}, {event.location}</span> {/* Include location */}
+              <span className="text-sm">{event.venue}</span>
             </div>
           </div>
         </div>

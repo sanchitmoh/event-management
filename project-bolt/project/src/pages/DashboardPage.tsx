@@ -1,4 +1,3 @@
-import React from 'react';
 import { Ticket, Calendar, CreditCard, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 

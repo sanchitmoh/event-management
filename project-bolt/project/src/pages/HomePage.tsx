@@ -3,125 +3,81 @@ import { Link } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import EventVideoCard from '../components/EventVideoCard';
 import { Event } from '../types';
-import { Calendar, Music, Trophy, Theater, Flame, Clock } from 'lucide-react';
+import { Music, Trophy, Theater, Clock } from 'lucide-react';
 import ReactPlayer from 'react-player';
 // Mock event data
 const MOCK_EVENTS: Event[] = [
   {
-    id: '1',
-    title: 'Summer Music Festival',
-    description: 'A three-day music festival featuring top artists from around the world',
-    category: 'concert',
-    date: '2024-07-15',
-    time: '18:00',
-    venue: 'Central Park',
-    price: 99.99,
-    imageUrl: 'https://images.unsplash.com/photo-1470229722913-7c0e2dbbafd3',
-    videoUrl: 'https://player.vimeo.com/video/164949806',
-    availableSeats: 1000,
-  },
-  {
-    id: '2',
-    title: 'NBA Finals Game',
-    description: 'Championship game of the season',
-    category: 'sports',
-    date: '2024-06-10',
-    time: '20:00',
-    venue: 'Madison Square Garden',
-    price: 299.99,
-    imageUrl: 'https://images.unsplash.com/photo-1504450758481-7338eba7524a',
-    videoUrl: 'https://player.vimeo.com/video/162947210',
-    availableSeats: 500,
-  },
-  {
-    id: '3',
-    title: 'Hamilton Musical',
-    description: 'Award-winning Broadway musical',
-    category: 'theater',
-    date: '2024-08-20',
-    time: '19:30',
-    venue: 'Broadway Theater',
-    price: 199.99,
-    imageUrl: 'https://images.unsplash.com/photo-1507676184212-d03ab07a01bf',
-    videoUrl: 'https://player.vimeo.com/video/165006795',
-    availableSeats: 300,
-  },
-  {
-    id: '4',
-    title: 'Electronic Dance Festival',
-    description: 'The biggest EDM festival of the year',
-    category: 'concert',
-    date: '2024-09-05',
-    time: '20:00',
-    venue: 'Randalls Island',
-    price: 149.99,
-    imageUrl: 'https://images.unsplash.com/photo-1516450360452-9312f5e86fc7',
-    videoUrl: 'https://player.vimeo.com/video/163231391',
-    availableSeats: 800,
-  },
-  {
-    id: '5',
-    title: 'World Cup Soccer Finals',
-    description: 'The ultimate soccer championship match',
-    category: 'sports',
-    date: '2024-07-20',
-    time: '15:00',
-    venue: 'MetLife Stadium',
-    price: 399.99,
-    imageUrl: 'https://images.unsplash.com/photo-1522778526097-ce0a22ceb253',
-    videoUrl: 'https://player.vimeo.com/video/162947210',
-    availableSeats: 600,
-  },
-  {
-    id: '6',
-    title: 'The Phantom of the Opera',
-    description: 'Classic Broadway musical spectacular',
-    category: 'theater',
-    date: '2024-08-15',
-    time: '19:00',
-    venue: 'Majestic Theatre',
-    price: 179.99,
-    imageUrl: 'https://images.unsplash.com/photo-1507676385008-e7fb562d11f8',
-    videoUrl: 'https://player.vimeo.com/video/165006795',
-    availableSeats: 400,
-  },
-  {
-    id: '7',
-    title: 'Jazz & Blues Festival',
-    description: 'A night of soulful music under the stars',
-    category: 'concert',
-    date: '2024-06-25',
-    time: '19:00',
-    venue: 'Blue Note Jazz Club',
-    price: 89.99,
-    imageUrl: 'https://images.unsplash.com/photo-1511192336575-5a79af67a629',
-    videoUrl: 'https://player.vimeo.com/video/164949806',
-    availableSeats: 200,
-  },
-  {
     id: '8',
-    title: 'Cirque du Soleil',
-    description: 'Breathtaking acrobatic performances',
+    title: 'Les Misérables',
+    description: 'Experience the powerful story of Les Misérables.',
+    date: '2024-10-10',
+    time: '18:00',
+    venue: 'West End Theater, London',
+    price: 60.00,
+    location: 'London',
     category: 'theater',
-    date: '2024-07-30',
+    imageUrl: 'https://staticeu.sweet.tv/images/cache/horizontal_posters/BCYGYEQCMVXCAHJKAIEAE===/13872-les-miserables_.jpg',
+  },
+  {
+    id: '9',
+    title: 'Concert: Acoustic Evening',
+    description: 'An intimate evening of acoustic performances by local artists.',
+    date: '2024-10-20',
+    time: '19:00',
+    venue: 'Cafe, San Francisco',
+    price: 20.00,
+    location: 'San Francisco',
+    category: 'concert',
+    imageUrl: 'https://t4.ftcdn.net/jpg/08/52/43/17/360_F_852431753_mSZMX9iaxe7pIBjY4SB8pOwEc0qDR2iZ.jpg',
+  },
+  {
+    id: '10',
+    title: 'Romeo and Juliet',
+    description: 'A timeless tale of love and tragedy performed live.',
+    date: '2024-11-01',
+    time: '19:30',
+    venue: 'Shakespeare Theater, London',
+    price: 45.00,
+    location: 'London',
+    category: 'theater',
+    imageUrl: 'https://webapp2.wright.edu/web1/newsroom/files/2014/11/RomeoAndJuliet2.jpg',
+  },
+  {
+    id: '11',
+    title: 'Kanye West: Donda Tour',
+    description: 'Catch Kanye West live on his Donda tour!',
+    date: '2024-09-20',
     time: '20:00',
-    venue: 'Barclays Center',
-    price: 159.99,
-    imageUrl: 'https://images.unsplash.com/photo-1519834785169-98be25ec3f84',
-    videoUrl: 'https://player.vimeo.com/video/165006795',
-    availableSeats: 700,
+    venue: 'United Center, Chicago',
+    price: 300.00,
+    location: 'Chicago',
+    category: 'Concert',
+    imageUrl: 'https://www.usatoday.com/gcdn/-mm-/98c88f66dedc33e13e6cc28e741e44d38281b35f/c=0-0-2760-2075/local/-/media/2016/11/21/USATODAY/USATODAY/636153602053989898-538401266.jpg',
+  },
+  {
+    id: '12',
+    title: 'The Nutcracker',
+    description: 'A magical ballet performance perfect for the holiday season.',
+    date: '2024-12-01',
+    time: '15:00',
+    venue: 'Ballet Theater, Chicago',
+    price: 50.00,
+    location: 'Chicago',
+    category: 'theater',
+    imageUrl: 'https://nevadaballetorg-1faa6.kxcdn.com/wp-content/uploads/2024/06/NBT-TheNutcracker-TSC-Website-Image-864x490-1-1.jpg',
   },
 ];
 // Categories with links
 const CATEGORIES = [
-  { id: 'all', label: 'All Events', icon: Calendar, link: '/events' },
+  { id: 'events', label: 'All Events', icon: Music, link: '/events' },
   { id: 'concert', label: 'Concerts', icon: Music, link: '/concert' },
-  { id: 'sports', label: 'Sports', icon: Trophy, link: '/sports' },
+  { id: 'sports', label: 'Sports', icon: Trophy, link: '/sport' },
   { id: 'movies', label: 'Movies', icon: Theater, link: '/movies' }, // Added Movies category
 ];
 export default function HomePage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [searchQuery, setSearchQuery] = useState<string>('');
+  const [, setSearchQuery] = useState<string>('');
   // Sort events by date
   const sortedEvents: Event[] = [...MOCK_EVENTS].sort((a, b) => {
     const dateA = new Date(a.date).getTime();
@@ -129,13 +85,7 @@ export default function HomePage() {
     return dateA - dateB;
   });
   const latestEvents: Event[] = sortedEvents.slice(0, 4);
-  const popularEvents: Event[] = [...MOCK_EVENTS].slice(0, 4); // Adjusted to just take first 4 events for popular
   // Filter events based on category and search query
-  const filteredEvents: Event[] = MOCK_EVENTS.filter(event => {
-    const matchesCategory: boolean = selectedCategory === 'all' || event.category === selectedCategory;
-    const matchesSearch: boolean = event.title.toLowerCase().includes(searchQuery.toLowerCase());
-    return matchesCategory && matchesSearch;
-  });
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
       {/* Video Background Hero Section */}
@@ -195,24 +145,7 @@ export default function HomePage() {
         </div>
       </div>
       {/* Popular Events Section */}
-      <div className="max-w-7xl mx-auto px-4 py-16">
-        <div className="flex items-center justify-between mb-8">
-          <div className="flex items-center space-x-2">
-            <Flame className="h-6 w-6 text-orange-400" />
-            <h2 className="text-3xl font-bold text-white">Popular Events</h2>
-          </div>
-          <Link to="/events" className="text-indigo-400 hover:text-indigo-300">
-            View All →
-          </Link>
-        </div>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-          {popularEvents.map((event, index) => (
-            <div key={event.id} className={`animate-scale-in stagger-delay-${index + 1}`}>
-              <EventVideoCard event={event} />
-            </div>
-          ))}
-        </div>
-      </div>
+      
       {/* Categories Section */}
       <div className="mb-12 animate-fade-in-up stagger-delay-3">
         <div className="flex justify-center space-x-6">

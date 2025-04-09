@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { DollarSign, ZoomIn, ZoomOut } from 'lucide-react';
+import { DollarSign, Link, ZoomIn, ZoomOut } from 'lucide-react';
+import { Link as RouterLink } from 'react-router-dom'; // Import Link from react-router-dom
 interface Seat {
   id: string;
   row: string;
@@ -17,7 +18,6 @@ interface Section {
 }
 function App() {
   const [zoom, setZoom] = useState(1);
-  
   const generateSeats = (sectionId: string, rowCount: number, seatsPerRow: number): Seat[] => {
     const seats: Seat[] = [];
     const rows = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.slice(0, rowCount);
@@ -33,13 +33,11 @@ function App() {
     });
     return seats;
   };
-  
   const [sections] = useState<Section[]>(() => {
     const sectionTypes = [
       { ring: 3, category: 'EXECUTIVE', price: 200, color: 'bg-blue-500', count: 16 },
       { ring: 4, category: 'STANDARD', price: 100, color: 'bg-green-500', count: 20 }
     ];
-    
     return sectionTypes.flatMap(type => 
       Array.from({ length: type.count }, (_, i) => ({
         id: `${type.category}-${i + 1}`,
@@ -54,11 +52,9 @@ function App() {
   });
   const [selectedSeats, setSelectedSeats] = useState<string[]>([]);
   const [selectedSection, setSelectedSection] = useState<Section | null>(null);
-  
   const handleSectionClick = (section: Section) => {
     setSelectedSection(section);
   };
-  
   const handleSeatClick = (seat: Seat) => {
     if (seat.isBooked) return;
     setSelectedSeats(prev => {
@@ -70,7 +66,6 @@ function App() {
       }
     });
   };
-  
   const totalAmount = selectedSeats.reduce((total, seatId) => {
     const [sectionId] = seatId.split('-');
     const section = sections.find(s => s.id.startsWith(sectionId));
@@ -188,15 +183,26 @@ function App() {
             <span>Total Amount:</span>
             <span>${totalAmount}</span>
           </div>
-          <button
-            className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg 
-              flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={selectedSeats.length === 0}
-            onClick={() => alert('Proceeding to payment...')}
-          >
-            <DollarSign size={20} />
-            Proceed to Payment
-          </button>
+          {selectedSeats.length > 0 ? (
+            <RouterLink to="/checkout">
+              <button
+                className="w-full mt-4 bg-blue-500 hover:bg-blue-600 text-white py-3 px-6 rounded-lg 
+                  flex items-center justify-center gap-2"
+              >
+                <DollarSign size={20} />
+                Proceed to Payment
+              </button>
+            </RouterLink>
+          ) : (
+            <button
+              className="w-full mt-4 bg-gray-400 text-white py-3 px-6 rounded-lg 
+                flex items-center justify-center gap-2 cursor-not-allowed"
+              disabled
+            >
+              <DollarSign size={20} />
+              Proceed to Payment
+            </button>
+          )}
         </div>
         {/* Legend */}
         <div className="mt-6 p-4 bg-gray-800 rounded-lg text-sm">

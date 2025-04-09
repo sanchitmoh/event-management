@@ -1,21 +1,21 @@
 import { ReactNode } from "react";
 
-export interface Event {
-  id: string;
-  title: string;
-  description: string;
-  category: 'concert' | 'sports' | 'theater';
-  date: string;
-  time: string;
-  venue: string;
-  location?: string;
-  price: number;
-  imageUrl: string;
-  videoUrl?: string;
-  availableSeats: number;
-  sections?: Section[];
-  popularity?: number;
-  createdAt?: string;
+// types.ts
+// Assuming this is in your types file (e.g., src/types.ts)
+// src/types.ts
+// src/types.ts
+// src/types.ts
+export interface Event { 
+  id: string;          // Unique identifier for the event
+  title: string;      // Title of the event
+  description: string; // Description of the event
+  date: string;       // Date of the event
+  time: string;       // Time of the event
+  venue: string;      // Venue where the event will take place
+  price: number;      // Price of the event
+  location: string;   // Location of the event
+  category: string;   // Category of the event (e.g., concert, theater)
+  imageUrl: string;   // URL for the event image
 }
 
 export interface Section {
@@ -113,4 +113,17 @@ export interface Concert {
   location: string; // Location of the concert (city, state, etc.)
   category: string; // Category of the concert (e.g., pop, rock, etc.)
   imageUrl: string; // URL of the concert image
+}
+// types.ts
+export interface SportEvent {
+  id: string;            // Unique identifier for the event
+  title: string;         // Title of the event
+  description: string;   // Description of the event
+  date: string;          // Date of the event in YYYY-MM-DD format
+  time: string;          // Time of the event (e.g., HH:mm)
+  venue: string;         // Venue where the event is held
+  price: number;         // Price of the ticket
+  location: string;      // Location of the event (city or place)
+  category: string;      // Category of the sport (e.g., Football, Basketball)
+  imageUrl: string;      // URL of the event image
 }

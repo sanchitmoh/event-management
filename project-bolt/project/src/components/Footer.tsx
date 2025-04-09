@@ -12,16 +12,16 @@ export default function Footer() {
               Your one-stop destination for events, movies, and entertainment.
             </p>
             <div className="flex space-x-4">
-              <a href="#" aria-label="Facebook" className="text-gray-400 hover:text-white">
+              <a href="https://www.facebook.com/" aria-label="Facebook" className="text-gray-400 hover:text-white">
                 <Facebook className="h-6 w-6" />
               </a>
-              <a href="#" aria-label="Twitter" className="text-gray-400 hover:text-white">
+              <a href="https://x.com/?lang=en" aria-label="Twitter" className="text-gray-400 hover:text-white">
                 <Twitter className="h-6 w-6" />
               </a>
-              <a href="#" aria-label="Instagram" className="text-gray-400 hover:text-white">
+              <a href="https://www.instagram.com/" aria-label="Instagram" className="text-gray-400 hover:text-white">
                 <Instagram className="h-6 w-6" />
               </a>
-              <a href="#" aria-label="YouTube" className="text-gray-400 hover:text-white">
+              <a href="https://www.youtube.com/" aria-label="YouTube" className="text-gray-400 hover:text-white">
                 <Youtube className="h-6 w-6" />
               </a>
             </div>
@@ -30,8 +30,13 @@ export default function Footer() {
           <div>
             <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2">
-              <li>
+            <li>
                 <Link to="/events" className="text-gray-400 hover:text-white">
+                  All Events
+                </Link>
+              </li>
+              <li>
+                <Link to="/concert" className="text-gray-400 hover:text-white">
                   Concerts
                 </Link>
               </li>
@@ -41,7 +46,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/movies" className="text-gray-400 hover:text-white">
+                <Link to="/sport" className="text-gray-400 hover:text-white">
                   Sports
                 </Link>
               </li>
@@ -67,12 +72,12 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link to="/terms" className="text-gray-400 hover:text-white">
+                <Link to="/terms-and-conditions" className="text-gray-400 hover:text-white">
                   Terms & Conditions
                 </Link>
               </li>
               <li>
-                <Link to="/privacy" className="text-gray-400 hover:text-white">
+                <Link to="/privacy-policy" className="text-gray-400 hover:text-white">
                   Privacy Policy
                 </Link>
               </li>
