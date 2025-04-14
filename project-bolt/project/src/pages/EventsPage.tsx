@@ -302,11 +302,12 @@ export default function EventPage() {
               </div>
               {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Location</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2" id="location-label">Location</label>
                 <select
                   value={selectedLocation}
                   onChange={(e) => setSelectedLocation(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
+                  aria-labelledby="location-label"
                 >
                   <option value="all">All Locations</option>
                   {LOCATIONS.map(location => (
@@ -316,11 +317,12 @@ export default function EventPage() {
               </div>
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2" id="category-label">Category</label>
                 <select
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
+                  aria-labelledby="category-label"
                 >
                   <option value="all">All Categories</option>
                   {CATEGORIES.map(category => (
@@ -330,12 +332,13 @@ export default function EventPage() {
               </div>
               {/* Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">Date</label>
+                <label className="block text-sm font-medium text-gray-700 mb-2" id="date-label">Date</label>
                 <input
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
+                  aria-labelledby="date-label"
                 />
               </div>
             </div>

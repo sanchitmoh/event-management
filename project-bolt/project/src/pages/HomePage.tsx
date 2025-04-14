@@ -1,11 +1,13 @@
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import SearchBar from '../components/SearchBar';
 import EventVideoCard from '../components/EventVideoCard';
 import { Event } from '../types';
-import { Music, Trophy, Theater, Clock } from 'lucide-react';
+import { Music, Trophy, Theater, Clock, Mail, CheckCircle, AlertCircle } from 'lucide-react';
 import ReactPlayer from 'react-player';
-// Mock event data
+import newsletterService from '../services/newsletter.service';
+import eventService from '../services/event.service';
+// Mock event data for initial render or fallback
 const MOCK_EVENTS: Event[] = [
   {
     id: '8',
@@ -76,15 +78,101 @@ const CATEGORIES = [
   { id: 'movies', label: 'Movies', icon: Theater, link: '/movies' }, // Added Movies category
 ];
 export default function HomePage() {
+  const navigate = useNavigate();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  const [, setSearchQuery] = useState<string>('');
+  const [email, setEmail] = useState<string>('');
+  const [name, setName] = useState<string>('');
+  const [isSubscribing, setIsSubscribing] = useState<boolean>(false);
+  const [subscriptionStatus, setSubscriptionStatus] = useState<{
+    success: boolean;
+    message: string;
+  } | null>(null);
+  const [events, setEvents] = useState<Event[]>(MOCK_EVENTS);
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [searchError, setSearchError] = useState<string | null>(null);
+  // Fetch events on component mount
+  useEffect(() => {
+    const fetchEvents = async () => {
+      try {
+        setIsLoading(true);
+        const data = await eventService.getAllEvents() as unknown as Event[];
+        if (data && data.length > 0) {
+          setEvents(data);
+        }
+      } catch (error) {
+        console.error('Failed to fetch events:', error);
+        // Fallback to mock data
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEvents();
+  }, []);
+  // Handle search
+  const handleSearch = async (query: string) => {
+    if (!query.trim()) {
+      return; // Don't search on empty query
+    }
+    
+    try {
+      setIsLoading(true);
+      setSearchError(null);
+      
+      // Navigate to search results page
+      navigate(`/events?search=${encodeURIComponent(query)}`);
+      
+    } catch (error) {
+      console.error('Search failed:', error);
+      setSearchError('Failed to perform search. Please try again.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
   // Sort events by date
-  const sortedEvents: Event[] = [...MOCK_EVENTS].sort((a, b) => {
+  const sortedEvents: Event[] = [...events].sort((a, b) => {
     const dateA = new Date(a.date).getTime();
     const dateB = new Date(b.date).getTime();
     return dateA - dateB;
   });
   const latestEvents: Event[] = sortedEvents.slice(0, 4);
+  const handleSubscribe = async (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Basic validation
+    if (!email || !email.includes('@')) {
+      setSubscriptionStatus({
+        success: false,
+        message: 'Please enter a valid email address.'
+      });
+      return;
+    }
+    
+    setIsSubscribing(true);
+    setSubscriptionStatus(null);
+    
+    try {
+      await newsletterService.subscribe({ email, name });
+      setSubscriptionStatus({
+        success: true,
+        message: 'Thanks for subscribing! You\'ll receive updates about upcoming events.'
+      });
+      // Clear form
+      setEmail('');
+      setName('');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error 
+        ? error.message 
+        : 'Failed to subscribe. Please try again.';
+      
+      setSubscriptionStatus({
+        success: false,
+        message: errorMessage
+      });
+    } finally {
+      setIsSubscribing(false);
+    }
+  };
   // Filter events based on category and search query
   return (
     <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-purple-900 to-pink-900">
@@ -120,7 +208,15 @@ export default function HomePage() {
               Discover and book the most exciting events happening around you
             </p>
             <div className="animate-fade-in-up stagger-delay-2">
-              <SearchBar onSearch={setSearchQuery} />
+              <SearchBar onSearch={handleSearch} />
+              {searchError && (
+                <p className="mt-2 text-red-300">{searchError}</p>
+              )}
+              {isLoading && (
+                <div className="mt-4 flex justify-center">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-white"></div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -144,8 +240,6 @@ export default function HomePage() {
           ))}
         </div>
       </div>
-      {/* Popular Events Section */}
-      
       {/* Categories Section */}
       <div className="mb-12 animate-fade-in-up stagger-delay-3">
         <div className="flex justify-center space-x-6">
@@ -177,16 +271,55 @@ export default function HomePage() {
             Get notified about upcoming events and exclusive offers
           </p>
           <div className="max-w-md mx-auto animate-fade-in-up stagger-delay-2">
-            <div className="flex gap-4">
+            {subscriptionStatus && (
+              <div className={`mb-4 p-3 rounded-lg ${subscriptionStatus.success ? 'bg-green-800/70' : 'bg-red-800/70'}`}>
+                <div className="flex items-center">
+                  {subscriptionStatus.success ? (
+                    <CheckCircle className="h-5 w-5 text-green-300 mr-2" />
+                  ) : (
+                    <AlertCircle className="h-5 w-5 text-red-300 mr-2" />
+                  )}
+                  <p className="text-white">{subscriptionStatus.message}</p>
+                </div>
+              </div>
+            )}
+            
+            <form onSubmit={handleSubscribe} className="space-y-3">
+              <div className="flex gap-4">
+                <div className="relative flex-1">
+                  <Mail className="absolute left-3 top-3.5 h-5 w-5 text-gray-400" />
+                  <input
+                    type="email"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    placeholder="Enter your email"
+                    className="w-full pl-10 pr-4 py-3 rounded-lg glass-effect text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:border-white"
+                    required
+                  />
+                </div>
+                <button 
+                  type="submit"
+                  disabled={isSubscribing}
+                  className="px-6 py-3 bg-white text-indigo-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105 disabled:opacity-70 disabled:hover:scale-100"
+                >
+                  {isSubscribing ? (
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-indigo-900"></div>
+                      <span>Subscribing...</span>
+                    </div>
+                  ) : (
+                    'Subscribe'
+                  )}
+                </button>
+              </div>
               <input
-                type="email"
-                placeholder="Enter your email"
-                className="flex-1 px-4 py-3 rounded-lg glass-effect text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:border-white"
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Your name (optional)"
+                className="w-full px-4 py-3 rounded-lg glass-effect text-white placeholder-gray-300 border border-white/20 focus:outline-none focus:border-white"
               />
-              <button className="px-6 py-3 bg-white text-indigo-900 rounded-lg font-semibold hover:bg-gray-100 transition-colors transform hover:scale-105">
-                Subscribe
-              </button>
-            </div>
+            </form>
           </div>
         </div>
       </div>

@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { Calendar, MapPin, Clock, Star } from 'lucide-react';
 import { Movie } from '../types'; // Ensure you have a Movie type defined
@@ -345,7 +344,7 @@ const MOCK_MOVIES: Movie[] = [
       reviews: [
         { user: 'Tom', comment: 'An inspiring story about perseverance.', rating: 9 },
       ],
-      description: 'A struggling salesman takes custody of his son as he’s poised to begin a life-changing professional career.',
+      description: 'A struggling salesman takes custody of his son as he\'s poised to begin a life-changing professional career.',
       priceRange: '$10 - $15',
       location: 'AMC Theaters, San Francisco',
       posterUrl: 'https://upload.wikimedia.org/wikipedia/en/8/81/The_Pursuit_of_Happyness.jpg'
@@ -414,7 +413,6 @@ const MOCK_MOVIES: Movie[] = [
 
 export default function MovieDetailPage() {
   const { id } = useParams();
-  const [] = useState(false);
 
   // Find the movie based on the id from the URL
   const movie = MOCK_MOVIES.find(movie => movie.id === id);

@@ -1,5 +1,4 @@
 import { Film } from 'lucide-react';
-import  {Link}  from 'react-router-dom';
 
 const AboutPage = () => {
   return (

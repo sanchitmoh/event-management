@@ -65,7 +65,7 @@ const CONCERTS = [
     {
       id: '6',
       title: 'Neha Kakkar: Live Performance',
-      description: 'Don’t miss Neha Kakkar live with her chart-topping hits!',
+      description: "Don't miss Neha Kakkar live with her chart-topping hits!",
       date: '2024-09-05',
       time: '18:00',
       venue: 'Delhi Indira Gandhi Stadium',
@@ -113,7 +113,7 @@ const CONCERTS = [
     {
       id: '10',
       title: 'Selena Gomez: Revival Tour',
-      description: 'Don’t miss Selena Gomez performing her greatest hits live.',
+      description: "Don't miss Selena Gomez performing her greatest hits live.",
       date: '2024-08-20',
       time: '21:00',
       venue: 'United Center, Chicago',
@@ -303,13 +303,15 @@ export default function ConcertPage() {
               </div>
               {/* Location */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="location-filter" className="block text-sm font-medium text-gray-700 mb-2">
                   Location
                 </label>
                 <select
+                  id="location-filter"
                   value={selectedLocation}
                   onChange={(e) => setSelectedLocation(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
+                  aria-label="Filter concerts by location"
                 >
                   <option value="all">All Locations</option>
                   {LOCATIONS.map(location => (
@@ -319,13 +321,15 @@ export default function ConcertPage() {
               </div>
               {/* Category */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="category-filter" className="block text-sm font-medium text-gray-700 mb-2">
                   Category
                 </label>
                 <select
+                  id="category-filter"
                   value={selectedCategory}
                   onChange={(e) => setSelectedCategory(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
+                  aria-label="Filter concerts by category"
                 >
                   <option value="all">All Categories</option>
                   {CATEGORIES.map(category => (
@@ -335,14 +339,17 @@ export default function ConcertPage() {
               </div>
               {/* Date */}
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="date-filter" className="block text-sm font-medium text-gray-700 mb-2">
                   Date
                 </label>
                 <input
+                  id="date-filter"
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
                   className="w-full px-3 py-2 border rounded-md"
+                  placeholder="Select date"
+                  title="Filter concerts by date"
                 />
               </div>
             </div>

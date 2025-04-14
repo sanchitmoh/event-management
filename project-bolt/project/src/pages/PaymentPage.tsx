@@ -1,7 +1,19 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { CreditCard, Wallet, Ban as Bank, Gift, Shield, ChevronRight, Check } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
+import { CreditCard, Wallet, Ban as Bank, Shield, ChevronRight, Check } from 'lucide-react';
+import paymentService, { PaymentRequest } from '../services/payment.service';
+import { useAuth } from '../context/AuthContext';
 
+// Declare Razorpay as global
+declare global {
+  interface Window {
+    Razorpay: {
+      new (options: object): {
+        open(): void;
+      };
+    };
+  }
+}
 
 interface PaymentMethod {
   id: string;
@@ -40,21 +52,127 @@ const BANKS = [
 
 export default function PaymentPage() {
   const navigate = useNavigate();
-  const [selectedMethod, setSelectedMethod] = useState<string>('');
+  const location = useLocation();
+  const { user } = useAuth();
+  
+  const [selectedMethod, setSelectedMethod] = useState<string>('card');
   const [couponCode, setCouponCode] = useState('');
   const [isProcessing, setIsProcessing] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const handlePayment = async () => {
-    setIsProcessing(true);
-    // Simulate payment processing
-    await new Promise(resolve => setTimeout(resolve, 2000));
-    navigate('/confirmation');
+  // Retrieve booking details from location state or mock data
+  const bookingDetails = location.state?.bookingDetails || {
+    eventId: 1,
+    eventType: 'CONCERT',
+    seats: ['A1', 'A2'],
+    subtotal: 2000,
+    discount: 200,
+    tax: 180,
+    total: 1980
   };
 
-  const subtotal = 1000;
-  const discount = 100;
-  const tax = 90;
-  const total = subtotal - discount + tax;
+  // Load Razorpay script
+  useEffect(() => {
+    const script = document.createElement('script');
+    script.src = 'https://checkout.razorpay.com/v1/checkout.js';
+    script.async = true;
+    document.body.appendChild(script);
+
+    return () => {
+      document.body.removeChild(script);
+    };
+  }, []);
+
+  const handlePayment = async () => {
+    try {
+      setIsProcessing(true);
+      setError(null);
+
+      // Prepare payment request
+      const paymentRequest: PaymentRequest = {
+        amount: bookingDetails.total,
+        currency: 'INR',
+        eventType: bookingDetails.eventType,
+        eventId: bookingDetails.eventId,
+        seatIds: bookingDetails.seats,
+        bookingNotes: couponCode ? `Coupon: ${couponCode}` : undefined
+      };
+
+      // Create order in backend
+      const orderResponse = await paymentService.createOrder(paymentRequest);
+      
+      if (orderResponse.status === 'ERROR') {
+        throw new Error(orderResponse.errorMessage || 'Failed to create payment order');
+      }
+      
+      // Configure Razorpay options
+      const options = {
+        key: orderResponse.keyId,
+        amount: orderResponse.amount * 100, // Convert to smallest currency unit
+        currency: orderResponse.currency,
+        name: 'Event Management',
+        description: `Booking for ${bookingDetails.eventType}`,
+        order_id: orderResponse.razorpayOrderId,
+        handler: async function (response: {
+          razorpay_order_id: string;
+          razorpay_payment_id: string;
+          razorpay_signature: string;
+        }) {
+          try {
+            // Verify payment with backend
+            const verifyResponse = await paymentService.verifyPayment({
+              razorpay_order_id: response.razorpay_order_id,
+              razorpay_payment_id: response.razorpay_payment_id,
+              razorpay_signature: response.razorpay_signature
+            });
+            
+            if (verifyResponse.status === 'COMPLETED') {
+              // Payment successful - redirect to confirmation
+              navigate('/checkout/' + verifyResponse.orderId, { 
+                state: { 
+                  paymentSuccess: true,
+                  paymentDetails: verifyResponse
+                } 
+              });
+            } else {
+              setError('Payment verification failed: ' + verifyResponse.errorMessage);
+              setIsProcessing(false);
+            }
+          } catch (error) {
+            console.error('Payment verification error:', error);
+            setError('Failed to verify payment. Please contact support.');
+            setIsProcessing(false);
+          }
+        },
+        prefill: {
+          name: user?.username || '',
+          email: user?.email || ''
+        },
+        theme: {
+          color: '#4F46E5' // Indigo color
+        },
+        modal: {
+          ondismiss: function() {
+            setIsProcessing(false);
+          }
+        }
+      };
+      
+      // Initialize Razorpay
+      const razorpay = new window.Razorpay(options);
+      razorpay.open();
+      
+    } catch (error) {
+      console.error('Payment error:', error);
+      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+      setIsProcessing(false);
+    }
+  };
+
+  const subtotal = bookingDetails.subtotal;
+  const discount = bookingDetails.discount;
+  const tax = bookingDetails.tax;
+  const total = bookingDetails.total;
 
   return (
     <div className="min-h-screen bg-gray-50 py-8">
@@ -64,6 +182,11 @@ export default function PaymentPage() {
             {/* Payment Methods */}
             <div className="bg-white rounded-lg shadow-lg p-6">
               <h2 className="text-xl font-semibold mb-4">Choose Payment Method</h2>
+              {error && (
+                <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg">
+                  {error}
+                </div>
+              )}
               <div className="space-y-4">
                 {PAYMENT_METHODS.map(method => (
                   <button
@@ -193,16 +316,21 @@ export default function PaymentPage() {
               {/* Pay Button */}
               <button
                 onClick={handlePayment}
-                disabled={!selectedMethod || isProcessing}
+                disabled={isProcessing}
                 className="mt-6 w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 disabled:bg-gray-400 flex items-center justify-center space-x-2"
               >
                 {isProcessing ? (
                   <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                    <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    </svg>
                     <span>Processing...</span>
                   </>
                 ) : (
-                  <span>Pay ₹{total}</span>
+                  <>
+                    <span>Pay ₹{total}</span>
+                  </>
                 )}
               </button>
             </div>
@@ -211,7 +339,7 @@ export default function PaymentPage() {
             <div className="bg-white rounded-lg shadow-lg p-6">
               <div className="flex items-center text-gray-600">
                 <Shield className="h-5 w-5 text-green-500 mr-2" />
-                <span className="text-sm">Secure payment powered by Stripe</span>
+                <span className="text-sm">Secure payment powered by Razorpay</span>
               </div>
             </div>
           </div>

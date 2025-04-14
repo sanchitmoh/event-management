@@ -8,7 +8,7 @@ const SPORTS_EVENTS = [
         description: 'Join us for the thrilling final match of the Football World Cup!',
         date: '2024-07-15',
         time: '18:00',
-        venue: 'Luzhniki Stadium, Moscow',
+        venue: 'Lungki Stadium, Moscow',
         price: 200.00,
         location: 'Moscow',
         category: 'Football',
@@ -307,6 +307,7 @@ export default function SportsPage() {
                                     Location
                                 </label>
                                 <select
+                                    aria-label="Location filter"
                                     value={selectedLocation}
                                     onChange={(e) => setSelectedLocation(e.target.value)}
                                     className="w-full px-3 py-2 border rounded-md"
@@ -323,6 +324,7 @@ export default function SportsPage() {
                                     Category
                                 </label>
                                 <select
+                                    aria-label="Category filter"
                                     value={selectedCategory}
                                     onChange={(e) => setSelectedCategory(e.target.value)}
                                     className="w-full px-3 py-2 border rounded-md"
@@ -343,6 +345,7 @@ export default function SportsPage() {
                                     value={selectedDate}
                                     onChange={(e) => setSelectedDate(e.target.value)}
                                     className="w-full px-3 py-2 border rounded-md"
+                                    aria-label="Date filter"
                                 />
                             </div>
                         </div>

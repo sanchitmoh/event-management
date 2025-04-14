@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { DollarSign, Link, ZoomIn, ZoomOut } from 'lucide-react';
-import { Link as RouterLink } from 'react-router-dom'; // Import Link from react-router-dom
+import { DollarSign, ZoomIn, ZoomOut } from 'lucide-react';
+import { Link as RouterLink } from 'react-router-dom';
 interface Seat {
   id: string;
   row: string;
@@ -81,12 +81,14 @@ function App() {
             <button 
               onClick={() => setZoom(z => Math.min(z + 0.2, 2))}
               className="p-2 bg-gray-800 rounded-full hover:bg-gray-700"
+              aria-label="Zoom in"
             >
               <ZoomIn size={20} />
             </button>
             <button 
               onClick={() => setZoom(z => Math.max(z - 0.2, 0.5))}
               className="p-2 bg-gray-800 rounded-full hover:bg-gray-700"
+              aria-label="Zoom out"
             >
               <ZoomOut size={20} />
             </button>
@@ -110,6 +112,7 @@ function App() {
                 return (
                   <button
                     key={section.id}
+                    aria-label={`Select ${section.name}`}
                     className={`absolute w-16 h-16 ${section.color} rounded-lg transform -translate-x-1/2 -translate-y-1/2 
                       hover:brightness-110 transition-all duration-200 cursor-pointer flex items-center justify-center
                       text-xs font-bold ${selectedSection?.id === section.id ? 'ring-4 ring-white' : ''}`}
@@ -144,6 +147,7 @@ function App() {
                     .map(seat => (
                       <button
                         key={seat.id}
+                        aria-label={`${seat.isBooked ? 'Booked' : 'Select'} seat ${seat.row}${seat.number}`}
                         className={`w-6 h-6 rounded-t-lg ${
                           seat.isBooked ? 'bg-gray-700 cursor-not-allowed' :
                           selectedSeats.includes(seat.id) ? 'bg-blue-500' :

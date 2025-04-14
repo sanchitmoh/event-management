@@ -1,141 +1,143 @@
-import React, { useState } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { CreditCard, Gift, Shield, Lock } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useParams, useNavigate, useLocation } from 'react-router-dom';
+import { CheckCircle, XCircle, Shield, ArrowLeft } from 'lucide-react';
+import paymentService from '../services/payment.service';
 
 export default function CheckoutPage() {
-  const { id } = useParams();
+  const { bookingId } = useParams();
   const navigate = useNavigate();
-  const [promoCode, setPromoCode] = useState('');
-  const [paymentMethod, setPaymentMethod] = useState('card');
-  const [isProcessing, setIsProcessing] = useState(false);
+  const location = useLocation();
+  const [loading, setLoading] = useState(true);
+  const [order, setOrder] = useState<{
+    id: string;
+    amount: number;
+    status: string;
+    createdAt: string;
+    paymentId?: string;
+  } | null>(null);
+  const [error, setError] = useState<string | null>(null);
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsProcessing(true);
+  // Get payment status from location state if available
+  const paymentSuccess = location.state?.paymentSuccess || false;
+  const paymentDetails = location.state?.paymentDetails || null;
 
-    try {
-      // Simulate payment processing
-      await new Promise(resolve => setTimeout(resolve, 2000));
-      navigate('/confirmation');
-    } catch (error) {
-      console.error('Payment failed:', error);
-    } finally {
-      setIsProcessing(false);
-    }
+  useEffect(() => {
+    const fetchPaymentDetails = async () => {
+      try {
+        if (paymentDetails) {
+          setOrder(paymentDetails);
+          setLoading(false);
+          return;
+        }
+        
+        if (bookingId) {
+          const orderDetails = await paymentService.getPaymentDetails(bookingId);
+          setOrder(orderDetails);
+        }
+      } catch (error) {
+        console.error('Error fetching order details:', error);
+        setError('Failed to load payment details. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPaymentDetails();
+  }, [bookingId, paymentDetails]);
+
+  const handleBack = () => {
+    navigate('/');
   };
+
+  const handleViewTickets = () => {
+    navigate('/dashboard');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-600"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 py-12">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {/* Checkout Form */}
-          <div className="bg-white rounded-xl shadow-xl p-8">
-            <div className="flex items-center space-x-2 mb-6">
-              <Lock className="h-6 w-6 text-indigo-600" />
-              <h2 className="text-2xl font-bold">Secure Checkout</h2>
-            </div>
-
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Card Information
-                </label>
-                <div className="relative">
-                  <input
-                    type="text"
-                    placeholder="Card number"
-                    className="w-full px-4 py-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                  <CreditCard className="absolute right-4 top-3.5 h-5 w-5 text-gray-400" />
-                </div>
-                <div className="grid grid-cols-2 gap-4 mt-4">
-                  <input
-                    type="text"
-                    placeholder="MM/YY"
-                    className="px-4 py-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                  <input
-                    type="text"
-                    placeholder="CVC"
-                    className="px-4 py-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Promo Code
-                </label>
-                <div className="flex space-x-4">
-                  <input
-                    type="text"
-                    value={promoCode}
-                    onChange={(e) => setPromoCode(e.target.value)}
-                    placeholder="Enter promo code"
-                    className="flex-1 px-4 py-3 border rounded-lg focus:ring-indigo-500 focus:border-indigo-500"
-                  />
-                  <button
-                    type="button"
-                    className="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200"
-                  >
-                    Apply
-                  </button>
-                </div>
-              </div>
-
-              <button
-                type="submit"
-                disabled={isProcessing}
-                className={`w-full bg-indigo-600 text-white py-3 px-4 rounded-lg hover:bg-indigo-700 transition-colors flex items-center justify-center space-x-2 ${
-                  isProcessing ? 'opacity-75 cursor-not-allowed' : ''
-                }`}
-              >
-                {isProcessing ? (
-                  <>
-                    <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                    <span>Processing...</span>
-                  </>
-                ) : (
-                  <span>Complete Purchase</span>
-                )}
-              </button>
-            </form>
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="bg-white rounded-xl shadow-xl p-8">
+          {/* Payment Status */}
+          <div className="flex flex-col items-center justify-center text-center mb-8">
+            {paymentSuccess ? (
+              <>
+                <CheckCircle className="h-16 w-16 text-green-500 mb-4" />
+                <h2 className="text-2xl font-bold text-gray-900">Payment Successful!</h2>
+                <p className="mt-2 text-gray-600">
+                  Your payment has been processed successfully.
+                </p>
+              </>
+            ) : (
+              <>
+                <XCircle className="h-16 w-16 text-red-500 mb-4" />
+                <h2 className="text-2xl font-bold text-gray-900">Payment Failed</h2>
+                <p className="mt-2 text-gray-600">
+                  {error || 'Your payment could not be processed. Please try again.'}
+                </p>
+              </>
+            )}
           </div>
 
-          {/* Order Summary */}
-          <div className="bg-white rounded-xl shadow-xl p-8">
-            <h3 className="text-xl font-bold mb-6">Order Summary</h3>
-            <div className="space-y-4">
-              <div className="flex justify-between">
-                <span>Ticket Price</span>
-                <span>$99.99</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Service Fee</span>
-                <span>$10.00</span>
-              </div>
-              <div className="flex justify-between">
-                <span>Tax</span>
-                <span>$8.80</span>
-              </div>
-              <div className="border-t pt-4">
-                <div className="flex justify-between font-bold text-lg">
-                  <span>Total</span>
-                  <span>$118.79</span>
+          {/* Order Details */}
+          {order && (
+            <div className="border rounded-lg p-6 mb-8">
+              <h3 className="text-lg font-semibold mb-4">Order Details</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Order ID:</span>
+                  <span className="font-medium">{order.id}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Amount:</span>
+                  <span className="font-medium">₹{order.amount}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Status:</span>
+                  <span className={`font-medium ${order.status === 'COMPLETED' ? 'text-green-600' : 'text-red-600'}`}>
+                    {order.status}
+                  </span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-gray-600">Payment ID:</span>
+                  <span className="font-medium">{order.paymentId || 'N/A'}</span>
                 </div>
               </div>
             </div>
+          )}
 
-            <div className="mt-8 space-y-4">
-              <div className="flex items-center text-gray-600 bg-gray-50 p-4 rounded-lg">
-                <Shield className="h-5 w-5 mr-2 text-green-500" />
-                <span className="text-sm">Secure checkout powered by Stripe</span>
-              </div>
-              <div className="flex items-center text-gray-600 bg-gray-50 p-4 rounded-lg">
-                <Gift className="h-5 w-5 mr-2 text-indigo-500" />
-                <span className="text-sm">100% money-back guarantee</span>
-              </div>
-            </div>
+          {/* Security Information */}
+          <div className="flex items-center text-gray-600 bg-gray-50 p-4 rounded-lg mb-8">
+            <Shield className="h-5 w-5 mr-2 text-green-500" />
+            <span className="text-sm">
+              This transaction is secure and encrypted. Your payment details are protected.
+            </span>
+          </div>
+
+          {/* Action Buttons */}
+          <div className="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4">
+            <button
+              onClick={handleBack}
+              className="flex-1 flex items-center justify-center px-6 py-3 border border-gray-300 rounded-lg text-gray-700 bg-white hover:bg-gray-50"
+            >
+              <ArrowLeft className="h-5 w-5 mr-2" />
+              Return to Home
+            </button>
+            {paymentSuccess && (
+              <button
+                onClick={handleViewTickets}
+                className="flex-1 px-6 py-3 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+              >
+                View My Tickets
+              </button>
+            )}
           </div>
         </div>
       </div>
