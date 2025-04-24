@@ -1,43 +1,47 @@
-export const API_BASE_URL = 'http://localhost:8080/api';
+// Get the API base URL from environment or default to localhost
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8081/api';
+
+// A helper function to construct endpoint URLs dynamically
+const createEndpoint = (path: string) => `${API_BASE_URL}${path}`;
 
 export const API_ENDPOINTS = {
   // Auth endpoints
-  LOGIN: `${API_BASE_URL}/auth/signin`,
-  REGISTER: `${API_BASE_URL}/auth/signup`,
-  
-  // Event endpoints 
-  EVENTS: `${API_BASE_URL}/events`,
-  EVENT_DETAIL: (id: number) => `${API_BASE_URL}/events/${id}`,
-  
+  LOGIN: createEndpoint('/auth/signin'),
+  REGISTER: createEndpoint('/auth/signup'),
+
+  // Event endpoints
+  EVENTS: createEndpoint('/events'),
+  EVENT_DETAIL: (id: number) => createEndpoint(`/events/${id}`),
+
   // Concert endpoints
-  CONCERTS: `${API_BASE_URL}/concerts`,
-  CONCERT_DETAIL: (id: number) => `${API_BASE_URL}/concerts/${id}`,
-  
+  CONCERTS: createEndpoint('/concerts'),
+  CONCERT_DETAIL: (id: number) => createEndpoint(`/concerts/${id}`),
+
   // Movie endpoints
-  MOVIES: `${API_BASE_URL}/movies`,
-  MOVIE_DETAIL: (id: number) => `${API_BASE_URL}/movies/${id}`,
-  
+  MOVIES: createEndpoint('/movies'),
+  MOVIE_DETAIL: (id: number) => createEndpoint(`/movies/${id}`),
+
   // Sports endpoints
-  SPORTS: `${API_BASE_URL}/sports`,
-  SPORT_DETAIL: (id: number) => `${API_BASE_URL}/sports/${id}`,
-  
+  SPORTS: createEndpoint('/sports'),
+  SPORT_DETAIL: (id: number) => createEndpoint(`/sports/${id}`),
+
   // Booking endpoints
-  BOOKINGS: `${API_BASE_URL}/bookings`,
-  BOOKING_DETAIL: (id: number) => `${API_BASE_URL}/bookings/${id}`,
-  
+  BOOKINGS: createEndpoint('/bookings'),
+  BOOKING_DETAIL: (id: number) => createEndpoint(`/bookings/${id}`),
+
   // Seat selection
-  SEATS: `${API_BASE_URL}/seats`,
-  
+  SEATS: createEndpoint('/seats'),
+
   // User profile
-  PROFILE: `${API_BASE_URL}/users/profile`,
-  
+  PROFILE: createEndpoint('/users/profile'),
+
   // Payment
-  PAYMENT: `${API_BASE_URL}/payment`,
-  
+  PAYMENT: createEndpoint('/payment'),
+
   // Newsletter
   NEWSLETTER: {
-    SUBSCRIBE: `${API_BASE_URL}/newsletter/subscribe`,
-    UNSUBSCRIBE: `${API_BASE_URL}/newsletter/unsubscribe`,
-    STATUS: `${API_BASE_URL}/newsletter/status`
+    SUBSCRIBE: createEndpoint('/newsletter/subscribe'),
+    UNSUBSCRIBE: createEndpoint('/newsletter/unsubscribe'),
+    STATUS: createEndpoint('/newsletter/status'),
   }
-}; 
+};

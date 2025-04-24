@@ -29,6 +29,7 @@ import ProtectedRoute from './components/ProtectedRoute';
 import { useAuth } from './context/AuthContext';
 import { NotificationProvider } from './context/NotificationContext';
 import NotificationToast from './components/NotificationToast';
+import APITest from './components/APITest';
 
 function App() {
   const { loading, isAuthenticated } = useAuth();
@@ -61,7 +62,7 @@ function App() {
             <Route path="/terms" element={<TermsAndConditionsPage />} />
             <Route path="/privacy" element={<PrivacyPolicyPage />} />
             <Route path="/refund" element={<RefundPage />} />
-            
+
             {/* Event listings (public) */}
             <Route path="/events" element={<EventsPage />} />
             <Route path="/events/:id" element={<EventDetailPage />} />
@@ -71,7 +72,7 @@ function App() {
             <Route path="/concerts/:id" element={<ConcertDetailPage />} />
             <Route path="/sports" element={<SportPage />} />
             <Route path="/sports/:id" element={<SportDetailPage />} />
-            
+
             {/* Protected routes - regular users */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<DashboardPage />} />
@@ -82,27 +83,35 @@ function App() {
               <Route path="/payment/:bookingId" element={<PaymentPage />} />
               <Route path="/checkout/:bookingId" element={<CheckoutPage />} />
             </Route>
-            
+
             {/* Protected routes - admin only */}
             <Route element={<ProtectedRoute requiredRole="ROLE_ADMIN" />}>
               <Route path="/admin" element={<DashboardPage isAdmin={true} />} />
             </Route>
-            
+
             {/* Error/Not Found route */}
-            <Route path="*" element={
-              <div className="flex h-screen flex-col items-center justify-center">
-                <h1 className="text-3xl font-bold text-gray-800">Page Not Found</h1>
-                <p className="mt-4 text-gray-600">The page you are looking for doesn't exist.</p>
-              </div>
-            } />
-            
+            <Route
+              path="*"
+              element={
+                <div className="flex h-screen flex-col items-center justify-center">
+                  <h1 className="text-3xl font-bold text-gray-800">Page Not Found</h1>
+                  <p className="mt-4 text-gray-600">The page you are looking for doesn't exist.</p>
+                </div>
+              }
+            />
+
             {/* Unauthorized route */}
-            <Route path="/unauthorized" element={
-              <div className="flex h-screen flex-col items-center justify-center">
-                <h1 className="text-3xl font-bold text-red-600">Unauthorized</h1>
-                <p className="mt-4 text-gray-600">You don't have permission to access this page.</p>
-              </div>
-            } />
+            <Route
+              path="/unauthorized"
+              element={
+                <div className="flex h-screen flex-col items-center justify-center">
+                  <h1 className="text-3xl font-bold text-red-600">Unauthorized</h1>
+                  <p className="mt-4 text-gray-600">You don't have permission to access this page.</p>
+                </div>
+              }
+            />
+
+            <Route path="/api-test" element={<APITest />} />
           </Routes>
         </main>
         <Footer />

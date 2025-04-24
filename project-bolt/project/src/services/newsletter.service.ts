@@ -7,7 +7,7 @@ export interface NewsletterRequest {
 }
 
 class NewsletterService {
-  async subscribe(request: NewsletterRequest): Promise<any> {
+  async subscribe(request: NewsletterRequest): Promise<{ success: boolean; message: string }> {
     try {
       const response = await axios.post(API_ENDPOINTS.NEWSLETTER.SUBSCRIBE, request);
       return response.data;
@@ -17,7 +17,7 @@ class NewsletterService {
     }
   }
 
-  async unsubscribe(email: string): Promise<any> {
+  async unsubscribe(email: string): Promise<{ success: boolean; message: string }> {
     try {
       const response = await axios.post(
         `${API_ENDPOINTS.NEWSLETTER.UNSUBSCRIBE}?email=${encodeURIComponent(email)}`
@@ -29,7 +29,7 @@ class NewsletterService {
     }
   }
 
-  async checkStatus(email: string): Promise<any> {
+  async checkStatus(email: string): Promise<{ subscribed: boolean; message: string }> {
     try {
       const response = await axios.get(
         `${API_ENDPOINTS.NEWSLETTER.STATUS}?email=${encodeURIComponent(email)}`

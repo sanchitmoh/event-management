@@ -2,6 +2,7 @@ package com.example.bookverse.security;
 
 import java.util.Arrays;
 
+import com.example.bookverse.security.jwt.JwtUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -34,7 +35,8 @@ public class WebSecurityConfig {
 
     @Bean
     public AuthTokenFilter authenticationJwtTokenFilter() {
-        return new AuthTokenFilter();
+        JwtUtils jwtUtils = new JwtUtils();
+        return new AuthTokenFilter(jwtUtils, userDetailsService);
     }
 
     @Bean

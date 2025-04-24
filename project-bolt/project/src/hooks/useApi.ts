@@ -1,18 +1,13 @@
-import { useState, useCallback } from 'react';
-import api from '../services/api';
+import { useState, useEffect, useCallback } from 'react';
+import { fetchWithAuth } from '../services/api';
 
-interface ApiState<T> {
+
+interface UseApiResult<T> {
   data: T | null;
   loading: boolean;
   error: Error | null;
+  refetch: () => Promise<void>;
 }
-
-interface ApiHook<T> extends ApiState<T> {
-  execute: (data?: Record<string, unknown>) => Promise<T | null>;
-  reset: () => void;
-}
-
-type ApiMethod = 'get' | 'post' | 'put' | 'delete';
 
 /**
  * Custom hook for API calls with loading, error, and data states
@@ -29,48 +24,35 @@ type ApiMethod = 'get' | 'post' | 'put' | 'delete';
  * const { data, loading, error, execute } = useApi<User>('post', '/users');
  * execute({ name: 'John', email: 'john@example.com' });
  */
-function useApi<T>(
-  method: ApiMethod,
-  url: string,
-  immediate = false
-): ApiHook<T> {
-  const [state, setState] = useState<ApiState<T>>({
-    data: null,
-    loading: immediate,
-    error: null,
-  });
-  const execute = useCallback(
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    async (_data?: Record<string, unknown>): Promise<T | null> => {
-      setState({ data: null, loading: true, error: null });
-      try {
-        // @ts-expect-error api methods are dynamically accessed
-        const data = await api[method](url, data);
-        setState({ data, loading: false, error: null });
-        return data;
-      } catch (error) {
-        setState({ data: null, loading: false, error: error as Error });
-        return null;
-      }
-    },
-    [method, url]
-  );
 
-  const reset = useCallback(() => {
-    setState({ data: null, loading: false, error: null });
-  }, []);
+export function useApi<T, B = unknown>(method: 'get' | 'post', endpoint: string, body?: B): UseApiResult<T> {
+  const [data, setData] = useState<T | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<Error | null>(null);
 
-  // Execute immediately if requested
-  useState(() => {
-    if (immediate) {
-      execute();
+  const fetchData = useCallback(async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const response = await fetchWithAuth(endpoint, { method, body: body ? JSON.stringify(body) : undefined });
+      const data = await response.json() as T; // Parse response data into JSON
+      setData(data); // Set data to parsed JSON
+    } catch (err) {
+      setError(err instanceof Error ? err : new Error('An unknown error occurred'));
+    } finally {
+      setLoading(false);
     }
-  });
+  }, [method, endpoint, body]);
+  
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
 
   return {
-    ...state,
-    execute,
-    reset,
+    data,
+    loading,
+    error,
+    refetch: fetchData
   };
 }
 

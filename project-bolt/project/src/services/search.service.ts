@@ -8,8 +8,8 @@ class SearchService {
    * @param query Search query
    * @returns Search results across different categories
    */
-  public async searchAll(query: string): Promise<any> {
-    return get<any>(`/search?query=${encodeURIComponent(query)}`);
+  public async searchAll(query: string): Promise<{ results: Array<{ id: string; name: string; description: string }>; total: number }> {
+    return get<{ results: Array<{ id: string; name: string; description: string }>; total: number }>(`/search?query=${encodeURIComponent(query)}`);
   }
 
   /**
@@ -29,7 +29,7 @@ class SearchService {
     order?: 'asc' | 'desc';
     limit?: number;
     page?: number;
-  }): Promise<any> {
+  }): Promise<{ results: Array<{ id: string; name: string; description: string }>; total: number }> {
     // Build the query string
     const queryParams = new URLSearchParams();
     
@@ -49,7 +49,7 @@ class SearchService {
     if (params.limit) queryParams.append('limit', params.limit.toString());
     if (params.page) queryParams.append('page', params.page.toString());
     
-    return get<any>(`/search/advanced?${queryParams.toString()}`);
+    return get<{ results: Array<{ id: string; name: string; description: string }>; total: number }>(`/search/advanced?${queryParams.toString()}`);
   }
 
   /**

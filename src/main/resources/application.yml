@@ -10,7 +10,7 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        format_sql: true
+        "[format_sql]": true
         "[dialect]": org.hibernate.dialect.MySQLDialect
   cache:
     type: redis
@@ -21,8 +21,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 587
-    username: ${EMAIL_USERNAME:your-email@gmail.com}
-    password: ${EMAIL_PASSWORD:your-app-password}
+    username: dwanmohite@gmail.com
+    password: oylg eeyt veiv cpzi
     properties:
       mail:
         smtp:
@@ -32,21 +32,21 @@ spring:
             required: true
 
 server:
-  port: 8080
+  port: 8081
   servlet:
     context-path: /api
 
 # JWT configuration
 app:
   jwt:
-    secret: ZmQ0ZGI5NjQ0MDQwY2I4MjMxY2Y3ZmI3MjdhN2ZmMjNhODViOTg1ZGE0NTBjMGM4NDA5NzYxMjdjOWMwYWRmZTBlZjlhNGY3ZTg4Y2U3YTE1ODVkZDU5Y2Y3OGYwZWE1NzUzNWQ2YjFjZDc0NGMxZWU2MmQ3MjY1NzJmNTE0MzI=
+    secret: WXsq0b1BHv8p9xjlpMRUBwtaytKatF63D43T5+xzLEc6qFsSX7MEKUo/73mbFsPvUYRJ1qTsZzpfQo2sKGK1/Q==
     expiration-ms: 86400000 # 24 hours
 
 # Razorpay configuration
 razorpay:
   key:
-    id: rzp_test_yourkeyhere
-    secret: yoursecrethere
+    id: rzp_test_z2eDnVHW1PyPqG
+    secret: BwIlCk9cfaEALxbZaTydZ1mi
 
 # Logging configuration
 logging:

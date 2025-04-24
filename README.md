@@ -156,11 +156,7 @@ Our caching implementation uses Redis for high-performance data retrieval and re
 │ Notification Service│
 └─────────────────────┘
 
-```
-
 ## Project Structure
-
-```
 
 Backend:
 src/main/java/com/example/bookverse
@@ -183,8 +179,6 @@ project-bolt/project/src
  ├── pages           # Page components
  ├── services        # API service functions
  └── types           # TypeScript type definitions
-
-```
 
 ## Setup Instructions
 
@@ -358,7 +352,7 @@ Use Postman collection in `docs/postman` for API testing.
 
 This project is licensed under the MIT License
 
-# Backend Environment Variables (.env in root directory)
+## Backend Environment Variables (.env in root directory)
 
 MYSQL_DATABASE=eventmanagement
 MYSQL_USER=root
@@ -366,27 +360,27 @@ MYSQL_PASSWORD=admin
 MYSQL_HOST=localhost
 MYSQL_PORT=3306
 
-# Redis Config
+## Redis Config
 
 REDIS_HOST=localhost
 REDIS_PORT=6379
 
-# Email Configuration
+## Email Configuration
 
 EMAIL_USERNAME=<your-email@gmail.com>
 EMAIL_PASSWORD=your-app-password
 
-# JWT Configuration
+## JWT Configuration
 
 JWT_SECRET=ZmQ0ZGI5NjQ0MDQwY2I4MjMxY2Y3ZmI3MjdhN2ZmMjNhODViOTg1ZGE0NTBjMGM4NDA5NzYxMjdjOWMwYWRmZTBlZjlhNGY3ZTg4Y2U3YTE1ODVkZDU5Y2Y3OGYwZWE1NzUzNWQ2YjFjZDc0NGMxZWU2MmQ3MjY1NzJmNTE0MzI=
 JWT_EXPIRATION_MS=86400000
 
-# Razorpay Keys
+## Razorpay Keys
 
 RAZORPAY_KEY_ID=rzp_test_yourkeyhere
 RAZORPAY_KEY_SECRET=yoursecrethere
 
-# Frontend Environment Variables (.env in project-bolt/project directory)
+## Frontend Environment Variables (.env in project-bolt/project directory)
 
 REACT_APP_API_URL=<http://localhost:8080/api>
 REACT_APP_WS_URL=ws://localhost:8080/api/ws

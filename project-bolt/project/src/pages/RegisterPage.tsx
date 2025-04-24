@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Mail, Lock, Calendar, User } from 'lucide-react';
-import AuthService from '../services/AuthService';
+import AuthService from '../services/auth.service';
 import type { SignupRequest } from '../services/AuthService';
 import { useAuth } from '../context/AuthContext';
 
@@ -18,7 +18,6 @@ export default function RegisterPage() {
   const navigate = useNavigate();
   const { login, isAuthenticated } = useAuth();
 
-  // Redirect if already logged in
   useEffect(() => {
     if (isAuthenticated) {
       navigate('/');
@@ -30,35 +29,28 @@ export default function RegisterPage() {
     if (name === 'confirmPassword') {
       setConfirmPassword(value);
     } else {
-      setFormData(prev => ({
-        ...prev,
-        [name]: value
-      }));
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
-    // Validate passwords match
+
     if (formData.password !== confirmPassword) {
       setError('Passwords do not match');
       return;
     }
-    
+
     setLoading(true);
     setError('');
 
     try {
-      // First register the user
       await AuthService.register(formData);
-      
-      // Then log them in using the context
       await login(formData.username, formData.password);
-      
-      // Navigation happens in useEffect when isAuthenticated changes
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'An unexpected error occurred');
+    } catch (err) {
+      const message =
+        err instanceof Error ? err.message : 'An unexpected error occurred';
+      setError(message);
       setLoading(false);
     }
   };
@@ -88,102 +80,35 @@ export default function RegisterPage() {
             </div>
           )}
           <form className="space-y-6" onSubmit={handleSubmit}>
-            <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-700">
-                Username
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="username"
-                  name="username"
-                  type="text"
-                  value={formData.username}
-                  onChange={handleChange}
-                  autoComplete="username"
-                  required
-                  className="appearance-none block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-                <User className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
+            {[
+              { label: 'Username', name: 'username', icon: User, type: 'text', autoComplete: 'username' },
+              { label: 'Full Name', name: 'fullName', icon: User, type: 'text', autoComplete: 'name' },
+              { label: 'Email address', name: 'email', icon: Mail, type: 'email', autoComplete: 'email' },
+              { label: 'Password', name: 'password', icon: Lock, type: 'password', autoComplete: 'new-password' },
+              { label: 'Confirm Password', name: 'confirmPassword', icon: Lock, type: 'password', autoComplete: 'new-password' }
+            ].map(({ label, name, icon: Icon, ...rest }) => (
+              <div key={name}>
+                <label htmlFor={name} className="block text-sm font-medium text-gray-700">
+                  {label}
+                </label>
+                <div className="mt-1 relative">
+                  <input
+                    id={name}
+                    name={name}
+                    value={name === 'confirmPassword' ? confirmPassword : formData[name as keyof SignupRequest]}
+                    onChange={handleChange}
+                    required
+                    minLength={name.includes('password') ? 6 : undefined}
+                    className="appearance-none block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
+                    {...rest}
+                  />
+                  <Icon className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
+                </div>
+                {name === 'password' && (
+                  <p className="mt-1 text-xs text-gray-500">Password must be at least 6 characters</p>
+                )}
               </div>
-            </div>
-            
-            <div>
-              <label htmlFor="fullName" className="block text-sm font-medium text-gray-700">
-                Full Name
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="fullName"
-                  name="fullName"
-                  type="text"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  autoComplete="name"
-                  required
-                  className="appearance-none block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-                <User className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-                Email address
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={formData.email}
-                  onChange={handleChange}
-                  autoComplete="email"
-                  required
-                  className="appearance-none block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-                <Mail className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
-              </div>
-            </div>
-
-            <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-                Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="password"
-                  name="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleChange}
-                  autoComplete="new-password"
-                  required
-                  minLength={6}
-                  className="appearance-none block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-                <Lock className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
-              </div>
-              <p className="mt-1 text-xs text-gray-500">Password must be at least 6 characters</p>
-            </div>
-
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700">
-                Confirm Password
-              </label>
-              <div className="mt-1 relative">
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type="password"
-                  value={confirmPassword}
-                  onChange={handleChange}
-                  autoComplete="new-password"
-                  required
-                  className="appearance-none block w-full px-3 py-2 pl-10 border border-gray-300 rounded-md shadow-sm placeholder-gray-400 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500"
-                />
-                <Lock className="h-5 w-5 text-gray-400 absolute left-3 top-2.5" />
-              </div>
-            </div>
+            ))}
 
             <div>
               <button
@@ -200,4 +125,4 @@ export default function RegisterPage() {
       </div>
     </div>
   );
-} 
+}

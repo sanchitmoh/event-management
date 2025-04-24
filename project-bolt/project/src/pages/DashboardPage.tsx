@@ -18,12 +18,16 @@ const MOCK_UPCOMING_EVENTS = [
   },
 ];
 
-export default function DashboardPage() {
+interface DashboardPageProps {
+  isAdmin?: boolean;
+}
+
+function DashboardPage({ isAdmin }: DashboardPageProps) {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-2xl font-bold text-gray-900">Dashboard</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{isAdmin ? 'Admin Dashboard' : 'User Dashboard'}</h1>
           <p className="text-gray-600">Welcome back, User!</p>
         </div>
 
@@ -101,3 +105,5 @@ export default function DashboardPage() {
     </div>
   );
 }
+
+export default DashboardPage;

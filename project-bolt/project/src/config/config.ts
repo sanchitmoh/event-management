@@ -4,11 +4,11 @@
  */
 
 const development = {
-  apiUrl: 'http://localhost:8080/api',
-  websocketUrl: 'http://localhost:8080/api/ws',
+  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:8081/api',
+  websocketUrl: import.meta.env.VITE_WS_URL || 'http://localhost:8081/ws',
   enableLogging: true,
   paymentGateway: {
-    publicKey: 'rzp_test_yourkeyhere',
+    publicKey: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_yourkeyhere',
     name: 'Event Management',
     description: 'Event Tickets',
     currency: 'INR',
@@ -17,11 +17,11 @@ const development = {
 };
 
 const production = {
-  apiUrl: process.env.REACT_APP_API_URL || 'https://api.eventmanagement.com/api',
-  websocketUrl: process.env.REACT_APP_WEBSOCKET_URL || 'https://api.eventmanagement.com/api/ws',
+  apiUrl: import.meta.env.VITE_API_URL || 'http://api.eventmanagement.com/api',
+  websocketUrl: import.meta.env.VITE_WS_URL || 'http://api.eventmanagement.com/ws',
   enableLogging: false,
   paymentGateway: {
-    publicKey: process.env.REACT_APP_RAZORPAY_KEY_ID || 'rzp_live_yourkeyhere',
+    publicKey: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_live_yourkeyhere',
     name: 'Event Management',
     description: 'Event Tickets',
     currency: 'INR',
@@ -30,11 +30,11 @@ const production = {
 };
 
 const test = {
-  apiUrl: 'http://localhost:8080/api',
-  websocketUrl: 'http://localhost:8080/api/ws',
+  apiUrl: import.meta.env.VITE_API_URL || 'http://localhost:8081/api',
+  websocketUrl: import.meta.env.VITE_WS_URL || 'http://localhost:8081/api/ws',
   enableLogging: false,
   paymentGateway: {
-    publicKey: 'rzp_test_yourkeyhere',
+    publicKey: import.meta.env.VITE_RAZORPAY_KEY_ID || 'rzp_test_yourkeyhere',
     name: 'Event Management',
     description: 'Event Tickets',
     currency: 'INR',
@@ -44,7 +44,7 @@ const test = {
 
 let config: typeof development;
 
-switch (process.env.NODE_ENV) {
+switch (import.meta.env.VITE_ENV || 'development') {
   case 'production':
     config = production;
     break;

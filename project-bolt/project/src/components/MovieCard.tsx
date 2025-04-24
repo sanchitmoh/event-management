@@ -1,4 +1,3 @@
-import React from 'react';
 import { Link } from 'react-router-dom';
 import { Star, Clock, Calendar } from 'lucide-react';
 import { Movie } from '../types';

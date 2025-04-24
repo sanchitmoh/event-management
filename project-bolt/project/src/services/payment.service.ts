@@ -32,18 +32,22 @@ export interface PaymentVerificationRequest {
 
 class PaymentService {
   async createOrder(paymentRequest: PaymentRequest): Promise<PaymentResponse> {
-    const response = await axios.post(
-      API_ENDPOINTS.PAYMENT + '/create-order',
-      paymentRequest,
-      {
-        headers: {
-          'Authorization': 'Bearer ' + authService.getToken()
-        }
+ try{
+  const response = await axios.post(
+    API_ENDPOINTS.PAYMENT + '/create-order',
+    paymentRequest,
+    {
+      headers: {
+        'Authorization': 'Bearer ' + authService.getToken()
       }
-    );
-    return response.data;
+    }
+  );
+  return response.data;
+ } catch (err: unknown) {
+  console.error('Payment API Error:', err);
+  throw new Error('Payment failed. Please try again.');
+ }
   }
-
   async verifyPayment(verificationData: PaymentVerificationRequest): Promise<PaymentResponse> {
     const params = new URLSearchParams();
     params.append('razorpay_order_id', verificationData.razorpay_order_id);

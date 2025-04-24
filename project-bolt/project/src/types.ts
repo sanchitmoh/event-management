@@ -15,7 +15,8 @@ export interface Event {
   price: number;      // Price of the event
   location: string;   // Location of the event
   category: string;   // Category of the event (e.g., concert, theater)
-  imageUrl: string;   // URL for the event image
+  imageUrl: string; 
+  videoUrl?: string;  // URL for the event image
 }
 
 export interface Section {

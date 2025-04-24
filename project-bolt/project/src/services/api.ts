@@ -7,9 +7,9 @@ import config from '../config/config';
 export async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   const token = AuthService.getToken();
   
-  const headers = {
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...options.headers,
+    ...(options.headers as Record<string, string>),
   };
   
   if (token) {
@@ -48,7 +48,7 @@ export async function get<T>(endpoint: string): Promise<T> {
 /**
  * POST request
  */
-export async function post<T>(endpoint: string, data: any): Promise<T> {
+export async function post<T, U = unknown>(endpoint: string, data: U): Promise<T> {
   const response = await fetchWithAuth(endpoint, {
     method: 'POST',
     body: JSON.stringify(data),
@@ -65,7 +65,7 @@ export async function post<T>(endpoint: string, data: any): Promise<T> {
 /**
  * PUT request
  */
-export async function put<T>(endpoint: string, data: any): Promise<T> {
+export async function put<T, U = unknown>(endpoint: string, data: U): Promise<T> {
   const response = await fetchWithAuth(endpoint, {
     method: 'PUT',
     body: JSON.stringify(data),

@@ -94,8 +94,8 @@ function App() {
             </button>
           </div>
           <div 
-            className="relative w-full aspect-square max-w-4xl mx-auto mb-8 overflow-hidden"
-            style={{ transform: `scale(${zoom})`, transformOrigin: 'center center' }}
+            className={`relative w-full aspect-square max-w-4xl mx-auto mb-8 overflow-hidden zoomable-container`}
+            style={{ transform: `scale(${zoom})`, position: 'relative' }}
           >
             {/* Field */}
             <div className="absolute inset-1/4 bg-green-700 rounded-full flex items-center justify-center">
@@ -113,10 +113,9 @@ function App() {
                   <button
                     key={section.id}
                     aria-label={`Select ${section.name}`}
-                    className={`absolute w-16 h-16 ${section.color} rounded-lg transform -translate-x-1/2 -translate-y-1/2 
-                      hover:brightness-110 transition-all duration-200 cursor-pointer flex items-center justify-center
-                      text-xs font-bold ${selectedSection?.id === section.id ? 'ring-4 ring-white' : ''}`}
-                    style={{ left, top }}
+                    className={`section-button ${section.color} ${selectedSection?.id === section.id ? 'selected' : ''} 
+                      flex items-center justify-center text-xs font-bold`}
+                    style={{ '--left': left, '--top': top } as React.CSSProperties}
                     onClick={() => handleSectionClick(section)}
                   >
                     {section.id.split('-')[1]}

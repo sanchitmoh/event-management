@@ -25,18 +25,28 @@ public class AuthEntryPointJwt implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException)
             throws IOException, ServletException {
+
         logger.error("Unauthorized error: {}", authException.getMessage());
 
+        // Check if the request expects HTML
+        String acceptHeader = request.getHeader("Accept");
+        if (acceptHeader != null && acceptHeader.contains("text/html")) {
+            response.sendRedirect("/unauthorized");
+            return;
+        }
+
+        // Otherwise, return JSON with custom error code
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
 
         final Map<String, Object> body = new HashMap<>();
         body.put("status", HttpServletResponse.SC_UNAUTHORIZED);
         body.put("error", "Unauthorized");
-        body.put("message", authException.getMessage());
+        body.put("message", "Access denied: " + authException.getMessage());
+        body.put("errorCode", "AUTH_001");
         body.put("path", request.getServletPath());
 
         final ObjectMapper mapper = new ObjectMapper();
         mapper.writeValue(response.getOutputStream(), body);
     }
-} 
+}

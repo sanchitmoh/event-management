@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 const RefundPage = () => {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
   const [refundReason, setRefundReason] = useState('');
   const [submissionMessage, setSubmissionMessage] = useState('');
-  const handleSubmit = (e) => {
+
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
     e.preventDefault();
     // Here you would typically send the data to your server
     // For now, we will just show a success message
@@ -62,7 +63,7 @@ const RefundPage = () => {
               required
               className="w-full p-2 border rounded"
               placeholder="Please explain the reason for your refund"
-              rows="4"
+              rows={4}
             />
           </div>
           <button

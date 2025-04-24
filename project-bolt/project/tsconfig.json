@@ -1,4 +1,9 @@
 {
+  "compilerOptions": {
+    "forceConsistentCasingInFileNames": true,
+    "strict": true,
+    "allowSyntheticDefaultImports": true
+  },
   "files": [],
   "references": [
     { "path": "./tsconfig.app.json" },

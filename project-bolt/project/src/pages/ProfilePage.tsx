@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { User, Mail, Phone, MapPin, Camera } from 'lucide-react';
 
 export default function ProfilePage() {
@@ -29,7 +29,11 @@ export default function ProfilePage() {
                   className="h-24 w-24 rounded-full object-cover"
                 />
                 {isEditing && (
-                  <button className="absolute bottom-0 right-0 bg-indigo-600 p-1.5 rounded-full text-white hover:bg-indigo-700">
+                  <button
+                    className="absolute bottom-0 right-0 bg-indigo-600 p-1.5 rounded-full text-white hover:bg-indigo-700"
+                    title="Change profile picture"
+                    aria-label="Change profile picture"
+                  >
                     <Camera className="h-4 w-4" />
                   </button>
                 )}
@@ -52,6 +56,7 @@ export default function ProfilePage() {
                     value={profile.name}
                     onChange={(e) => setProfile({ ...profile, name: e.target.value })}
                     disabled={!isEditing}
+                    placeholder="Enter your full name"
                     className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
@@ -68,6 +73,7 @@ export default function ProfilePage() {
                     value={profile.email}
                     onChange={(e) => setProfile({ ...profile, email: e.target.value })}
                     disabled={!isEditing}
+                    placeholder="Enter your email address"
                     className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
@@ -84,6 +90,7 @@ export default function ProfilePage() {
                     value={profile.phone}
                     onChange={(e) => setProfile({ ...profile, phone: e.target.value })}
                     disabled={!isEditing}
+                    placeholder="Enter your phone number"
                     className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
@@ -100,6 +107,7 @@ export default function ProfilePage() {
                     value={profile.address}
                     onChange={(e) => setProfile({ ...profile, address: e.target.value })}
                     disabled={!isEditing}
+                    placeholder="Enter your address"
                     className="focus:ring-indigo-500 focus:border-indigo-500 block w-full pl-10 sm:text-sm border-gray-300 rounded-md"
                   />
                 </div>
